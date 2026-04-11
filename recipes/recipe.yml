@@ -1,16 +1,11 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: bazzite-mechrevo
-description: Bazzite image with Motorcomm YT6801 driver for Mechrevo.
+description: Bazzite with automated YT6801 driver updates.
 
 base-image: ghcr.io/ublue-os/bazzite
 image-version: latest
 
 modules:
-  - type: files
-    files:
-      - source: system
-        destination: /
-
   - type: script
     scripts:
       - build-yt6801.sh
