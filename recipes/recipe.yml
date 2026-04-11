@@ -15,4 +15,3 @@ modules:
     scripts:
       - build-yt6801.sh
 
-  - type: signing
