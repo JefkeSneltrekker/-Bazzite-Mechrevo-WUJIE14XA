@@ -1,30 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 1. Install necessary build tools
-# We use -y to skip confirmation and ensure the cache is used
-dnf install -y dkms gcc make kernel-devel
+echo "Step 1: Installing dependencies..."
+dnf install -y dkms gcc make kernel-devel-matched git
 
-# 2. Get the driver source code
-# We use a unique temporary directory to avoid permission issues
-TMP_DIR=$(mktemp -d)
-echo "Downloading source to $TMP_DIR..."
+echo "Step 2: Fetching LATEST driver source from Tuxedo..."
+# We use a temp directory to ensure a clean build environment
+BUILD_DIR=$(mktemp -d)
+DRIVER_DIR="/usr/src/yt6801-1.0"
 
-# We use -L to follow redirects and -k for insecure if needed, 
-# but the main fix is using a stable tarball link
-curl -L https://github.com/tuxedocomputers/tuxedo-yt6801/archive/refs/heads/master.tar.gz -o "$TMP_DIR/driver.tar.gz"
+# Fix for the "Username" error: tell git to use a dummy credential 
+# helper or use the direct https link without interactive prompts
+git clone --depth 1 https://github.com/tuxedocomputers/tuxedo-yt6801.git "$BUILD_DIR"
 
-# Extract the driver
-mkdir -p "$TMP_DIR/yt6801-1.0"
-tar -xzf "$TMP_DIR/driver.tar.gz" -C "$TMP_DIR/yt6801-1.0" --strip-components=1
+# Move source to the correct location for DKMS
+rm -rf "$DRIVER_DIR"
+cp -r "$BUILD_DIR" "$DRIVER_DIR"
 
-# 3. Prepare for DKMS
-# In Bazzite, we must move the source to /usr/src AFTER preparation
-rm -rf /usr/src/yt6801-1.0
-cp -r "$TMP_DIR/yt6801-1.0" /usr/src/yt6801-1.0
-
-# Create the DKMS configuration
-cat << EOF > /usr/src/yt6801-1.0/dkms.conf
+echo "Step 3: Configuring DKMS..."
+cat << EOF > "$DRIVER_DIR/dkms.conf"
 PACKAGE_NAME="yt6801"
 PACKAGE_VERSION="1.0"
 BUILT_MODULE_NAME[0]="yt6801"
@@ -32,15 +26,17 @@ DEST_MODULE_LOCATION[0]="/kernel/drivers/net/ethernet/motorcomm"
 AUTOINSTALL="yes"
 EOF
 
-# 4. Build the driver
-# We explicitly find the kernel version of the image we are building
+echo "Step 4: Building and Installing for current kernel..."
+# Get the kernel version directly from the image filesystem
 KERNEL_VERSION=$(ls /lib/modules | head -n 1)
-echo "Building for kernel: $KERNEL_VERSION"
+echo "Targeting kernel version: $KERNEL_VERSION"
 
 dkms add -m yt6801 -v 1.0
 dkms build -m yt6801 -v 1.0 -k "$KERNEL_VERSION"
 dkms install -m yt6801 -v 1.0 -k "$KERNEL_VERSION"
 
-# 5. Finalize
+echo "Step 5: Cleaning up and finalizing..."
 depmod -a "$KERNEL_VERSION"
-echo "Build successful!"
+rm -rf "$BUILD_DIR"
+
+echo "Driver automation successful!"
