@@ -11,6 +11,6 @@ modules:
       - source: system
         destination: /
 
-  - type: script
-    scripts:
-      - build-yt6801.sh
+  - type: akmods
+    install:
+      - yt6801
