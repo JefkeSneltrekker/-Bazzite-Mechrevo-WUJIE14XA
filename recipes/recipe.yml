@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: bazzite-mechrevo
-description: Bazzite image with Motorcomm YT6801 LAN driver.
+description: Bazzite image with Motorcomm YT6801 driver for Mechrevo.
 
 base-image: ghcr.io/ublue-os/bazzite
 image-version: latest
@@ -11,6 +11,6 @@ modules:
       - source: system
         destination: /
 
-  - type: akmods
-    install:
-      - yt6801
+  - type: script
+    scripts:
+      - build-yt6801.sh
