@@ -36,4 +36,5 @@ jobs:
           recipe: ${{ matrix.recipe }}
           registry_token: ${{ github.token }}
           pr_event_number: ${{ github.event.number }}
-          sigstore: false
+          maximize_build_space: true
+          build_opts: "--no-sign"
