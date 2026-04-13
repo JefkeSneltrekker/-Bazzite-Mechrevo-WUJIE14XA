@@ -6,10 +6,10 @@ base-image: ghcr.io/ublue-os/bazzite
 image-version: latest
 
 modules:
-  - type: kargs
-    arguments:
-      - acpi.ec_no_wakeup=1
-      
-  - type: script
-    scripts:
-      - build-yt6801.sh
+      - type: kargs
+        args:
+          - acpi.ec_no_wakeup=1
+
+      - type: script
+        scripts:
+          - build-yt6801.sh
