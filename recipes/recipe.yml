@@ -6,8 +6,8 @@ base-image: ghcr.io/ublue-os/bazzite
 image-version: latest
 
 modules:
-  - type: kernel-parameters
-    parameters:
+  - type: kargs
+    arguments:
       - acpi.ec_no_wakeup=1
       
   - type: script
