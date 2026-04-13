@@ -7,7 +7,7 @@ image-version: latest
 
 modules:
       - type: kargs
-        args:
+        kargs:
           - acpi.ec_no_wakeup=1
 
       - type: script
