@@ -5,8 +5,8 @@ How to use?
 
 1) Do a normal fresh bazzite desktop install from a bootable usb.
 2) after first boot, open a terminal, and rebase your install to this repo:
-Command in terminal: rpm-ostree rebase ostree-unverified-registry:ghcr.io/jefkesneltrekker/bazzite-mechrevo:latest
+rpm-ostree rebase ostree-unverified-registry:ghcr.io/jefkesneltrekker/bazzite-mechrevo:latest
 3) Normally after succesfull rebase, you would automaticly get this warning:
-Apply your rpm-ostree change with the command: systemctl reboot
+Apply your rpm-ostree change with this command: systemctl reboot
 
 13-4-2026 -> Added the Tuxedo driver for Motorcomm Microelectronics. YT6801 Gigabit Ethernet Controller.
