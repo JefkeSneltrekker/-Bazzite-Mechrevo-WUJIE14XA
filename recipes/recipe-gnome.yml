@@ -1,0 +1,14 @@
+name: bazzite-mechrevo-gnome
+description: Bazzite GNOME for Mechrevo
+
+base-image: ghcr.io/ublue-os/bazzite-gnome
+image-version: latest
+
+modules:
+      - type: kargs
+        kargs:
+          - acpi.ec_no_wakeup=1
+
+      - type: script
+        scripts:
+          - build-yt6801.sh
